@@ -1,0 +1,9 @@
+{
+  "name": "docker-haraka",
+  "description": "Custom Haraka deployment",
+  "dependencies": {
+    "aws-sdk": "2.149.0"
+  },
+  "repository": "https://github.com/PokaInc/docker-haraka",
+  "license": "UNLICENSED"
+}

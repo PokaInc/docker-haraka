@@ -1,0 +1,7 @@
+;Haraka official plugins
+relay
+dkim_sign
+
+;Poka custom plugins
+route53_dkim_record
+publish_ses_error_on_bounces
