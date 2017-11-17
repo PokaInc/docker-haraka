@@ -5,8 +5,8 @@ const util = require('util');
 exports.hook_bounce = function (next, connection) {
     connection.logdebug(util.inspect(connection, false, null));
 
-    var date = new Date();
-    var innerMessage = {
+    const date = new Date();
+    const innerMessage = {
         notificationType: "Complaint",
         bounce: {
             bounceType: "Transient",
@@ -38,7 +38,7 @@ exports.hook_bounce = function (next, connection) {
 
     connection.logdebug(util.inspect(innerMessage, false, null));
 
-    var sns = new AWS.SNS();
+    const sns = new AWS.SNS();
     sns.publish({
         Message: JSON.stringify({default: JSON.stringify(innerMessage)}),
         MessageStructure: 'json',
@@ -52,4 +52,4 @@ exports.hook_bounce = function (next, connection) {
     });
 
     next(OK);
-}
+};

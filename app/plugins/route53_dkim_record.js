@@ -1,12 +1,12 @@
 "use strict";
 const util = require('util');
 const AWS = require('aws-sdk');
-const log   = require('./logger');
+const log = require('./logger');
 
 exports.hook_init_master = function (next, connection) {
-    var route53 = new AWS.Route53();
+    const route53 = new AWS.Route53();
 
-    var params = {
+    const params = {
         ChangeBatch: {
             Changes: [
                 {
@@ -45,13 +45,13 @@ process.on('SIGTERM', function () {
 
 exports.shutdown = () => {
     // Leave the record cleanup to the main process
-    if(process.pid !== 1) {
+    if (process.pid !== 1) {
         return;
     }
 
-    var route53 = new AWS.Route53();
+    const route53 = new AWS.Route53();
 
-    var params = {
+    const params = {
         ChangeBatch: {
             Changes: [
                 {

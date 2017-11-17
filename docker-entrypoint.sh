@@ -2,31 +2,6 @@
 
 set -e
 
-# change the ownership of the haraka persistence volumes.
-# @param $1 {String} chown ownership rule
-haraka_chown() {
-    chown -R "$1" "$HARAKA_DATA"
-}
-
-# change the permission flags of the haraka persistence volumes.
-# @param $1 {String} chmod permission flags
-haraka_chmod() {
-    chmod "$1" "$HARAKA_DATA"
-}
-
-
-# perform pre-boot actions before the SMTP server starts.
-haraka_bootstrap() {
-    if test "x$DOCKER_VOLUMES_CHOWN" != "x";then
-        haraka_chown "$DOCKER_VOLUMES_CHOWN" || return 1
-    fi
-
-    if test "x$DOCKER_VOLUMES_CHMOD" != "x";then
-        haraka_chmod "$DOCKER_VOLUMES_CHMOD" || return 1
-    fi
-
-    return 0
-}
 
 write_log_level() {
     echo ${LOG_LEVEL:NOTICE} > /app/config/loglevel
@@ -80,12 +55,6 @@ validate_haraka_env() {
         return 1
     fi
 
-    if test "x$HARAKA_LOGS" = "x";then
-        echo "Haraka logs directory has not been set." 1>&2
-
-        return 1
-    fi
-
     if test "x$HARAKA_DATA" = "x";then
         echo "Haraka data directory has not been set." 1>&2
 
@@ -95,12 +64,10 @@ validate_haraka_env() {
     return 0
 }
 
-
 exec_haraka() {
     validate_haraka_env || exit 1
     create_dkim_private_key || exit 2
     write_log_level || exit 3
-    haraka_bootstrap || exit 4
 
     exec "$@" 2>&1
 }
@@ -129,4 +96,3 @@ main() {
 }
 
 main "$@"
-
