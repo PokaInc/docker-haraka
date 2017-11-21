@@ -3,6 +3,10 @@ const util = require('util');
 const AWS = require('aws-sdk');
 const log = require('./logger');
 
+const dkimRecordName = process.env.DKIM_RECORD_NAME;
+const dkimRecordValue = process.env.DKIM_RECORD_VALUE;
+const hostedZoneId = process.env.HOSTED_ZONE_ID;
+
 exports.hook_init_master = function (next, connection) {
     const route53 = new AWS.Route53();
 
@@ -12,10 +16,10 @@ exports.hook_init_master = function (next, connection) {
                 {
                     Action: "CREATE",
                     ResourceRecordSet: {
-                        Name: process.env.DKIM_RECORD_NAME,
+                        Name: dkimRecordName,
                         ResourceRecords: [
                             {
-                                Value: util.format("\"%s\"", process.env.DKIM_RECORD_VALUE)
+                                Value: util.format("\"%s\"", dkimRecordValue)
                             }
                         ],
                         TTL: 300,
@@ -24,7 +28,7 @@ exports.hook_init_master = function (next, connection) {
                 }
             ]
         },
-        HostedZoneId: process.env.HOSTED_ZONE_ID
+        HostedZoneId: hostedZoneId
     };
 
     route53.changeResourceRecordSets(params, function (err, data) {
@@ -57,10 +61,10 @@ exports.shutdown = () => {
                 {
                     Action: "DELETE",
                     ResourceRecordSet: {
-                        Name: process.env.DKIM_RECORD_NAME,
+                        Name: dkimRecordName,
                         ResourceRecords: [
                             {
-                                Value: util.format("\"%s\"", process.env.DKIM_RECORD_VALUE)
+                                Value: util.format("\"%s\"", dkimRecordValue)
                             }
                         ],
                         TTL: 300,
@@ -69,7 +73,7 @@ exports.shutdown = () => {
                 }
             ]
         },
-        HostedZoneId: process.env.HOSTED_ZONE_ID
+        HostedZoneId: hostedZoneId
     };
 
     route53.changeResourceRecordSets(params, function (err, data) {

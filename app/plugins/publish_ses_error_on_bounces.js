@@ -2,6 +2,8 @@
 const AWS = require('aws-sdk');
 const util = require('util');
 
+const bouncesSnsTopicArn = process.env.BOUNCES_SNS_TOPIC_ARN;
+
 exports.hook_bounce = function (next, connection) {
     connection.logdebug(util.inspect(connection, false, null));
 
@@ -42,7 +44,7 @@ exports.hook_bounce = function (next, connection) {
     sns.publish({
         Message: JSON.stringify({default: JSON.stringify(innerMessage)}),
         MessageStructure: 'json',
-        TargetArn: process.env.BOUNCES_SNS_TOPIC_ARN
+        TargetArn: bouncesSnsTopicArn
     }, function (err, data) {
         if (err) {
             connection.logerror(err.stack);
