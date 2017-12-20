@@ -28,6 +28,19 @@ create_dkim_private_key() {
     return 0
 }
 
+# extract and export AWS region based on the SNS topic ARN
+extract_and_export_region() {
+    export AWS_REGION=`echo $BOUNCES_SNS_TOPIC_ARN | sed -e 's/arn:aws:sns:\(.*\):[[:digit:]]\{12\}:.*/\1/'`
+
+    if test "x$AWS_REGION" = "x";then
+        echo "AWS_REGION was not properly extracted from BOUNCES_SNS_TOPIC_ARN." 1>&2
+
+        return 1
+    fi
+
+    return 0
+}
+
 # ensure the environment has been set up correctly.
 # @return {Number} a value greater than zero if anything is not OK
 validate_haraka_env() {
@@ -43,20 +56,8 @@ validate_haraka_env() {
         return 1
     fi
 
-    if test "x$AWS_REGION" = "x";then
-        echo "AWS_REGION has not been set." 1>&2
-
-        return 1
-    fi
-
     if test "x$BOUNCES_SNS_TOPIC_ARN" = "x";then
         echo "BOUNCES_SNS_TOPIC_ARN has not been set." 1>&2
-
-        return 1
-    fi
-
-    if test "x$HARAKA_DATA" = "x";then
-        echo "Haraka data directory has not been set." 1>&2
 
         return 1
     fi
@@ -66,8 +67,9 @@ validate_haraka_env() {
 
 exec_haraka() {
     validate_haraka_env || exit 1
-    create_dkim_private_key || exit 2
-    write_log_level || exit 3
+    extract_and_export_region || exit 2
+    create_dkim_private_key || exit 3
+    write_log_level || exit 4
 
     exec "$@" 2>&1
 }

@@ -8,7 +8,6 @@ SES bounce notification system.
 #### Required environment variables
 * DOMAIN `# Domain name for creating the SPF record`
 * HOSTED_ZONE_ID `# Hosted Zone Id from Route53 for creating the SPF record`
-* AWS_REGION `# The region of your SNS topic`
 * BOUNCES_SNS_TOPIC_ARN `# The SNS topic where SES-like bounces notifications will be sent`
 
 #### Optional environment variables
@@ -16,7 +15,7 @@ SES bounce notification system.
 
 #### Exemple
 ```
-docker run -e DOMAIN=exemple.com HOSTED_ZONE_ID=abc123 AWS_REGION=ca-central-1 BOUNCES_SNS_TOPIC_ARN=arn:aws:sns:us-west-2:111122223333:MyTopic -p 2525:25 pokainc/docker-haraka:v1.0.0
+docker run -e DOMAIN=exemple.com HOSTED_ZONE_ID=abc123 BOUNCES_SNS_TOPIC_ARN=arn:aws:sns:ca-central-1:111122223333:MyTopic -p 2525:25 pokainc/docker-haraka:v1.0.0
 ```
 
 ### Send a test mail
