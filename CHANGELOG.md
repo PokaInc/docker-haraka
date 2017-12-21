@@ -1,5 +1,12 @@
 # Change Log
 
+## [v1.0.1](https://github.com/PokaInc/docker-haraka/tree/v1.0.1) (2017-12-21)
+[Full Changelog](https://github.com/PokaInc/docker-haraka/compare/v1.0.0...v1.0.1)
+
+**Merged pull requests:**
+
+- feat\(bootstrapping\) detect and export region from SNS topic ARN [\#2](https://github.com/PokaInc/docker-haraka/pull/2) ([laurrentt](https://github.com/laurrentt))
+
 ## [v1.0.0](https://github.com/PokaInc/docker-haraka/tree/v1.0.0) (2017-11-21)
 **Merged pull requests:**
 
