@@ -7,20 +7,25 @@ __check_defined = \
 		$(error Undefined $1$(if $2, ($2))))
 
 RELEASE_BRANCH=master
-VERSION = $(shell git describe --always --tag)
-REPOSITORY = quay.io/poka/docker-haraka
+GIT_DESCRIBE_TAG = $(shell git describe --always --tag)
+VERSION = $(GIT_DESCRIBE_TAG)
+CI_ACCOUNT_ID = $(shell aws ssm get-parameter --name organization.accounts.ci.id --query "Parameter.Value" --output text)
+ECR_REPOSITORY = $(CI_ACCOUNT_ID).dkr.ecr.us-east-1.amazonaws.com/docker-haraka
 THIS_DIR:=$(shell pwd)
 
 version:
 	@echo $(VERSION)
 
-build:
-	docker build --pull -t $(REPOSITORY):$(VERSION) .
+login_to_ecr:
+	@$(shell aws ecr get-login --no-include-email --registry-ids $(CI_ACCOUNT_ID) --region us-east-1)
 
-push:
-	docker push $(REPOSITORY):$(VERSION)
+build:
+	@docker build -t $(ECR_REPOSITORY):$(VERSION) .
+
+push: login_to_ecr
+	@docker push $(ECR_REPOSITORY):$(VERSION)
 
 generate-changelog:
 	$(call check_defined, FUTURE_RELEASE, Ex: make generate-changelog FUTURE_RELEASE=v1.0.0)
-	docker pull prooph/github-changelog-generator
-	docker run -e CHANGELOG_GITHUB_TOKEN=$(CHANGELOG_GITHUB_TOKEN) -it --rm -v $(THIS_DIR):/app prooph/github-changelog-generator --release-branch=master --no-issues --future-release=$(FUTURE_RELEASE)
+	@docker pull pokainc/github-changelog-generator
+	@docker run -e CHANGELOG_GITHUB_TOKEN=$(CHANGELOG_GITHUB_TOKEN) -it --rm -v $(THIS_DIR):/app pokainc/github-changelog-generator --future-release=$(FUTURE_RELEASE)
