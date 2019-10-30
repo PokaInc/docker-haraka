@@ -20,7 +20,7 @@ login_to_ecr:
 	@$(shell aws ecr get-login --no-include-email --registry-ids $(CI_ACCOUNT_ID) --region us-east-1)
 
 build:
-	@docker build -t $(ECR_REPOSITORY):$(VERSION) .
+	@docker build --pull -t $(ECR_REPOSITORY):$(VERSION) .
 
 push: login_to_ecr
 	@docker push $(ECR_REPOSITORY):$(VERSION)
