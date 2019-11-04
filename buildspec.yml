@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - make build
+
+  post_build:
+    commands:
+      - >-
+        if [ "$CODEBUILD_BUILD_SUCCEEDING" = "0" ]; then
+            exit 1;
+        fi
+      - make push
