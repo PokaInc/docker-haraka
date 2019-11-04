@@ -1,6 +1,10 @@
 version: 0.2
 
 phases:
+  pre_build:
+    commands:
+    - export CI_ACCOUNT_ID=$(aws sts get-caller-identity --output text --query 'Account')
+
   build:
     commands:
       - make build

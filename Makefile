@@ -9,7 +9,7 @@ __check_defined = \
 RELEASE_BRANCH=master
 GIT_DESCRIBE_TAG = $(shell git describe --always --tag)
 VERSION = $(GIT_DESCRIBE_TAG)
-CI_ACCOUNT_ID = $(shell aws ssm get-parameter --name organization.accounts.ci.id --query "Parameter.Value" --output text)
+CI_ACCOUNT_ID ?= $(shell aws ssm get-parameter --name organization.accounts.ci.id --query "Parameter.Value" --output text)
 ECR_REPOSITORY = $(CI_ACCOUNT_ID).dkr.ecr.us-east-1.amazonaws.com/docker-haraka
 THIS_DIR:=$(shell pwd)
 
